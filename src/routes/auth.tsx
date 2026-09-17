@@ -100,7 +100,6 @@ function AuthPage() {
               </div>
             )}
             <div className="text-left">
-              <p className="text-xs font-semibold uppercase text-muted-foreground">Cliente</p>
               <h1 className="text-lg font-black text-foreground">
                 {settings?.businessName ?? "Tempero Mirim"}
               </h1>
