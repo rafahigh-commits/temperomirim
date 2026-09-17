@@ -10,21 +10,24 @@ import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import systemLogo from "@/assets/logo-comanda-facil.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar — Comandas Quiosque Maré" },
+      { title: "Entrar — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Acesse o sistema de comandas do Quiosque Maré para abrir contas, lançar produtos e registrar pagamentos.",
+          "Acesse o Comanda Fácil para abrir contas, lançar produtos e registrar pagamentos do Tempero Mirim.",
       },
-      { property: "og:title", content: "Entrar — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Entrar — Comanda Fácil" },
       {
         property: "og:description",
-        content: "Acesso da equipe ao sistema de comandas do Quiosque Maré.",
+        content: "Acesso da equipe do Tempero Mirim ao Comanda Fácil.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AuthPage,
@@ -79,21 +82,30 @@ function AuthPage() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          {settings?.logoSrc ? (
-            <img
-              src={settings.logoSrc}
-              alt={`Logotipo ${settings.businessName}`}
-              className="mx-auto h-20 w-auto max-w-[200px] object-contain"
-            />
-          ) : (
-            <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-primary text-xl font-black text-primary-foreground">
-              QM
+          <img
+            src={systemLogo.url}
+            alt="Comanda Fácil"
+            className="mx-auto h-28 w-auto max-w-[240px] object-contain"
+          />
+          <div className="mt-5 flex items-center justify-center gap-3 border-t border-border pt-5">
+            {settings?.logoSrc ? (
+              <img
+                src={settings.logoSrc}
+                alt={`Logotipo ${settings.businessName}`}
+                className="h-12 w-12 rounded-md object-contain"
+              />
+            ) : (
+              <div className="grid h-12 w-12 place-items-center rounded-md bg-primary text-sm font-black text-primary-foreground">
+                TM
+              </div>
+            )}
+            <div className="text-left">
+              <p className="text-xs font-semibold uppercase text-muted-foreground">Cliente</p>
+              <h1 className="text-lg font-black text-foreground">
+                {settings?.businessName ?? "Tempero Mirim"}
+              </h1>
             </div>
-          )}
-          <h1 className="mt-4 text-2xl font-black tracking-tight text-foreground">
-            {settings?.businessName ?? "Comandas Quiosque Maré"}
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">Acesso da equipe</p>
+          </div>
         </div>
 
         <form onSubmit={handleSignIn} className="space-y-4 rounded-2xl bg-card p-5 shadow-sm">
