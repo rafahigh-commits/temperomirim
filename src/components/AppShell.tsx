@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { settingsQuery } from "@/lib/data";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import systemLogo from "@/assets/logo-comanda-facil.png.asset.json";
+const systemLogoUrl = "/logo-comanda-facil.png";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { data: settings } = useQuery(settingsQuery);
@@ -39,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
           <div className="flex min-w-0 items-center gap-2.5 sm:gap-4">
             <img
-              src={systemLogo.url}
+              src={systemLogoUrl}
               alt="Comanda Fácil"
               className="h-12 w-auto max-w-[104px] shrink-0 object-contain sm:h-14 sm:max-w-[128px]"
             />
