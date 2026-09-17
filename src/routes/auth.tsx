@@ -79,7 +79,7 @@ function AuthPage() {
   if (checking) return null;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+    <div className="flex min-h-screen items-center justify-center bg-white px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <img
