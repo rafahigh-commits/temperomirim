@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { settingsQuery } from "@/lib/data";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
-import systemLogo from "@/assets/logo-comanda-facil.png.asset.json";
+const systemLogoUrl = "/logo-comanda-facil.png";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { data: settings } = useQuery(settingsQuery);
