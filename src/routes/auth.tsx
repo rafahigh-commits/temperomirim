@@ -83,7 +83,7 @@ function AuthPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <img
-            src={systemLogo.url}
+            src={systemLogoUrl}
             alt="Comanda Fácil"
             className="mx-auto h-28 w-auto max-w-[240px] object-contain"
           />
