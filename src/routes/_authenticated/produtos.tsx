@@ -31,17 +31,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 export const Route = createFileRoute("/_authenticated/produtos")({
   head: () => ({
     meta: [
-      { title: "Produtos e categorias — Comandas Quiosque Maré" },
+      { title: "Produtos e categorias — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Cadastre produtos, defina preços, categorias e ative ou inative itens do cardápio do Quiosque Maré.",
+          "Cadastre produtos, defina preços, categorias e ative ou inative itens do cardápio do Tempero Mirim.",
       },
-      { property: "og:title", content: "Produtos e categorias — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Produtos e categorias — Comanda Fácil" },
       {
         property: "og:description",
         content: "Gestão do cardápio: produtos, preços, categorias e disponibilidade.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProductsPage,

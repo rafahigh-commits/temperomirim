@@ -79,23 +79,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Comandas Quiosque Maré" },
+      { title: "Comanda Fácil" },
       {
         name: "description",
         content:
-          "Controle de comandas do Quiosque Maré: abra contas, lance produtos e feche o caixa do dia.",
+          "Sistema de comandas do Tempero Mirim: abra contas, lance produtos e feche o caixa do dia.",
       },
-      { property: "og:title", content: "Comandas Quiosque Maré" },
+      { property: "og:title", content: "Comanda Fácil" },
       {
         property: "og:description",
-        content: "Abra contas, lance produtos e feche o caixa direto do celular.",
+        content: "Gestão simples de comandas, produtos e caixa para o Tempero Mirim.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
       { name: "theme-color", content: "#0b2b3a" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "Maré" },
+      { name: "apple-mobile-web-app-title", content: "Comanda Fácil" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
     ],
     links: [
@@ -117,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>

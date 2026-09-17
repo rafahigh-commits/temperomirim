@@ -25,17 +25,19 @@ import {
 export const Route = createFileRoute("/_authenticated/historico")({
   head: () => ({
     meta: [
-      { title: "Histórico de contas — Comandas Quiosque Maré" },
+      { title: "Histórico de contas — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Consulte contas fechadas do Quiosque Maré por período e forma de pagamento, com cliente, telefone e total.",
+          "Consulte contas fechadas do Tempero Mirim por período e forma de pagamento, com cliente, telefone e total.",
       },
-      { property: "og:title", content: "Histórico de contas — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Histórico de contas — Comanda Fácil" },
       {
         property: "og:description",
         content: "Busque contas fechadas por período, cliente e forma de pagamento.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: HistoryPage,

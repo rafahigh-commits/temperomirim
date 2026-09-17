@@ -49,17 +49,19 @@ import {
 export const Route = createFileRoute("/_authenticated/conta/$accountId")({
   head: () => ({
     meta: [
-      { title: "Conta aberta — Comandas Quiosque Maré" },
+      { title: "Conta aberta — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Lance produtos, acompanhe o total e feche a conta com forma de pagamento no Quiosque Maré.",
+          "Lance produtos, acompanhe o total e feche a conta com forma de pagamento no Tempero Mirim.",
       },
-      { property: "og:title", content: "Conta aberta — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Conta aberta — Comanda Fácil" },
       {
         property: "og:description",
         content: "Lançamento rápido de produtos e fechamento da comanda.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AccountPage,

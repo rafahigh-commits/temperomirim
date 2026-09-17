@@ -14,17 +14,19 @@ import { Switch } from "@/components/ui/switch";
 export const Route = createFileRoute("/_authenticated/configuracoes")({
   head: () => ({
     meta: [
-      { title: "Ajustes do negócio — Comandas Quiosque Maré" },
+      { title: "Ajustes do negócio — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Defina o nome do estabelecimento e a logo exibida no topo do aplicativo de comandas do Quiosque Maré.",
+          "Defina o nome e o logotipo do cliente exibidos no Comanda Fácil.",
       },
-      { property: "og:title", content: "Ajustes do negócio — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Ajustes do negócio — Comanda Fácil" },
       {
         property: "og:description",
-        content: "Nome do estabelecimento e logo do aplicativo de comandas.",
+        content: "Nome e logotipo do cliente no sistema de comandas.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SettingsPage,
@@ -116,7 +118,7 @@ function SettingsPage() {
       {isAdmin && (
         <>
           <div className="space-y-2">
-            <Label htmlFor="business">Nome do estabelecimento</Label>
+            <Label htmlFor="business">Nome do cliente</Label>
             <Input
               id="business"
               className="h-12"
@@ -134,7 +136,7 @@ function SettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="logo">Logo</Label>
+            <Label htmlFor="logo">Logotipo do cliente</Label>
             {settings.data?.logoSrc && (
               <div className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3">
                 <img
@@ -164,7 +166,7 @@ function SettingsPage() {
               }}
             />
             <p className="text-xs text-muted-foreground">
-              PNG ou JPG, até 2 MB. A imagem aparece inteira no topo do app.
+              PNG ou JPG, até 2 MB. Aparece ao lado da marca Comanda Fácil.
             </p>
           </div>
 
