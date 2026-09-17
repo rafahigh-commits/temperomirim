@@ -1,7 +1,7 @@
 {
-  "name": "Comandas Quiosque Maré",
-  "short_name": "Maré",
-  "description": "Abra contas, lance produtos e feche o caixa do Quiosque Maré.",
+  "name": "Comanda Fácil — Tempero Mirim",
+  "short_name": "Comanda Fácil",
+  "description": "Abra contas, lance produtos e feche o caixa do Tempero Mirim.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

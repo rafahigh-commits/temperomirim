@@ -18,7 +18,7 @@ export const getPublicBranding = createServerFn({ method: "GET" }).handler(async
   }
 
   return {
-    businessName: data?.business_name ?? "Quiosque Maré",
+    businessName: data?.business_name ?? "Tempero Mirim",
     logoSrc,
   };
 });

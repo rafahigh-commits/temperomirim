@@ -11,17 +11,19 @@ import { Label } from "@/components/ui/label";
 export const Route = createFileRoute("/_authenticated/fechamento")({
   head: () => ({
     meta: [
-      { title: "Fechamento do dia — Comandas Quiosque Maré" },
+      { title: "Fechamento do dia — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Resumo diário de faturamento do Quiosque Maré por forma de pagamento, com contas fechadas e ticket médio.",
+          "Resumo diário de faturamento do Tempero Mirim por forma de pagamento, com contas fechadas e ticket médio.",
       },
-      { property: "og:title", content: "Fechamento do dia — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Fechamento do dia — Comanda Fácil" },
       {
         property: "og:description",
         content: "Faturamento do dia por dinheiro, Pix, débito e crédito.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ClosingPage,

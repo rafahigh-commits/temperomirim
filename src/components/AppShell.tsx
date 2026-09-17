@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { settingsQuery } from "@/lib/data";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import systemLogo from "@/assets/logo-comanda-facil.png.asset.json";
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { data: settings } = useQuery(settingsQuery);
@@ -35,26 +36,34 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background pb-20 md:pb-0">
       <header className="sticky top-0 z-30 border-b border-border/60 bg-card/95 backdrop-blur">
-        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3">
-          <div className="flex min-w-0 items-center gap-3">
-            {settings?.logoSrc ? (
-              <img
-                src={settings.logoSrc}
-                alt={`Logotipo ${settings.businessName}`}
-                className="h-11 w-auto max-w-[120px] shrink-0 object-contain"
-              />
-            ) : (
-              <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-primary text-sm font-black text-primary-foreground">
-                QM
+        <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
+          <div className="flex min-w-0 items-center gap-2.5 sm:gap-4">
+            <img
+              src={systemLogo.url}
+              alt="Comanda Fácil"
+              className="h-12 w-auto max-w-[104px] shrink-0 object-contain sm:h-14 sm:max-w-[128px]"
+            />
+            <div className="h-10 w-px shrink-0 bg-border" aria-hidden="true" />
+            <div className="flex min-w-0 items-center gap-2.5">
+              {settings?.logoSrc ? (
+                <img
+                  src={settings.logoSrc}
+                  alt={`Logotipo ${settings.businessName}`}
+                  className="h-9 w-9 shrink-0 rounded-md object-contain sm:h-11 sm:w-11"
+                />
+              ) : (
+                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-primary text-xs font-black text-primary-foreground sm:h-11 sm:w-11">
+                  TM
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-bold leading-tight text-foreground sm:text-base">
+                  {settings?.businessName ?? "Tempero Mirim"}
+                </p>
+                <p className="truncate text-[11px] text-muted-foreground sm:text-xs">
+                  {fullName || "Atendimento"} · {role === "admin" ? "Admin" : role === "gerente" ? "Gerente" : "Atendente"}
+                </p>
               </div>
-            )}
-            <div className="min-w-0">
-              <p className="truncate text-base font-bold leading-tight text-foreground">
-                {settings?.businessName ?? "Quiosque Maré"}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {fullName || "Atendimento"} · {role === "admin" ? "Admin" : role === "gerente" ? "Gerente" : "Atendente"}
-              </p>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-1">

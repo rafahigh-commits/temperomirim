@@ -31,17 +31,19 @@ import {
 export const Route = createFileRoute("/_authenticated/usuarios")({
   head: () => ({
     meta: [
-      { title: "Usuários — Comandas Quiosque Maré" },
+      { title: "Usuários — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Área administrativa para criar e gerenciar os usuários da equipe do Quiosque Maré.",
+          "Área administrativa para criar e gerenciar os usuários da equipe do Tempero Mirim.",
       },
-      { property: "og:title", content: "Usuários — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Usuários — Comanda Fácil" },
       {
         property: "og:description",
-        content: "Cadastro e gestão de acessos da equipe do Quiosque Maré.",
+        content: "Cadastro e gestão de acessos da equipe do Tempero Mirim.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: UsersPage,

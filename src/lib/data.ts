@@ -41,7 +41,7 @@ export const settingsQuery = queryOptions({
       logoSrc = signed?.signedUrl ?? null;
     }
     return {
-      businessName: data?.business_name ?? "Quiosque Maré",
+      businessName: data?.business_name ?? "Tempero Mirim",
       logoPath: data?.logo_url ?? null,
       logoSrc,
       serviceFeeEnabled: data?.service_fee_enabled ?? true,

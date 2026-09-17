@@ -29,17 +29,19 @@ import {
 export const Route = createFileRoute("/_authenticated/")({
   head: () => ({
     meta: [
-      { title: "Contas abertas — Comandas Quiosque Maré" },
+      { title: "Contas abertas — Comanda Fácil" },
       {
         name: "description",
         content:
-          "Painel de contas abertas do Quiosque Maré: abra novas comandas, acompanhe o consumo e o total do dia.",
+          "Painel de contas abertas do Tempero Mirim: abra novas comandas, acompanhe o consumo e o total do dia.",
       },
-      { property: "og:title", content: "Contas abertas — Comandas Quiosque Maré" },
+      { property: "og:title", content: "Contas abertas — Comanda Fácil" },
       {
         property: "og:description",
         content: "Abra comandas, lance produtos e acompanhe o consumo em tempo real.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Dashboard,
@@ -90,7 +92,9 @@ function Dashboard() {
         customer_phone: form.get("customer_phone"),
         table_number: form.get("table_number"),
       });
-      if (!parsed.success) throw new Error(parsed.error.issues[0]!.message);
+      if (!parsed.success) {
+        throw new Error(parsed.error.issues[0]?.message ?? "Confira os dados informados.");
+      }
       const table = parsed.data.table_number?.trim();
       const { data, error } = await supabase
         .from("accounts")
