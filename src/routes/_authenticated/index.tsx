@@ -92,7 +92,9 @@ function Dashboard() {
         customer_phone: form.get("customer_phone"),
         table_number: form.get("table_number"),
       });
-      if (!parsed.success) throw new Error(parsed.error.issues[0]!.message);
+      if (!parsed.success) {
+        throw new Error(parsed.error.issues[0]?.message ?? "Confira os dados informados.");
+      }
       const table = parsed.data.table_number?.trim();
       const { data, error } = await supabase
         .from("accounts")

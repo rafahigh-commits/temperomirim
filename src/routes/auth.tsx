@@ -63,7 +63,7 @@ function AuthPage() {
       password: form.get("password"),
     });
     if (!parsed.success) {
-      toast.error(parsed.error.issues[0]!.message);
+      toast.error(parsed.error.issues[0]?.message ?? "Confira os dados informados.");
       return;
     }
     setLoading(true);
