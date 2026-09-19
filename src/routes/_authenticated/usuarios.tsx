@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth";
 import {
   createStaffUser,
   listStaffUsers,
+  resetStaffPassword,
   updateStaffUser,
   type StaffUser,
 } from "@/lib/users.functions";
@@ -59,9 +60,11 @@ function UsersPage() {
   const createFn = useServerFn(createStaffUser);
   const listFn = useServerFn(listStaffUsers);
   const updateFn = useServerFn(updateStaffUser);
+  const resetFn = useServerFn(resetStaffPassword);
 
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<Role>("atendente");
+  const [resetUser, setResetUser] = useState<StaffUser | null>(null);
 
   const users = useQuery({
     queryKey: ["staff-users"],
@@ -91,6 +94,15 @@ function UsersPage() {
     onSuccess: () => {
       toast.success("Usuário atualizado.");
       invalidate();
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const resetPassword = useMutation({
+    mutationFn: (input: { userId: string; password: string }) => resetFn({ data: input }),
+    onSuccess: () => {
+      toast.success("Senha atualizada. Informe a nova senha ao usuário.");
+      setResetUser(null);
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -148,6 +160,9 @@ function UsersPage() {
                     {u.active ? "Ativo" : "Inativo"}
                   </span>
                 </div>
+                <Button variant="outline" size="sm" onClick={() => setResetUser(u)}>
+                  Nova senha
+                </Button>
               </div>
             </div>
           </div>
@@ -210,6 +225,49 @@ function UsersPage() {
             <DialogFooter>
               <Button type="submit" className="h-12 w-full" disabled={createUser.isPending}>
                 Criar usuário
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={resetUser !== null} onOpenChange={(v) => !v && setResetUser(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Definir nova senha</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Por segurança, as senhas não podem ser vistas por ninguém — nem pelo administrador.
+            Defina uma nova senha para {resetUser?.full_name || resetUser?.email} e informe ao
+            usuário.
+          </p>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = new FormData(e.currentTarget);
+              const password = String(form.get("password") ?? "");
+              if (password.length < 6) {
+                toast.error("A senha deve ter no mínimo 6 caracteres.");
+                return;
+              }
+              if (resetUser) resetPassword.mutate({ userId: resetUser.id, password });
+            }}
+          >
+            <div className="space-y-2">
+              <Label htmlFor="reset-password">Nova senha</Label>
+              <Input
+                id="reset-password"
+                name="password"
+                type="text"
+                required
+                className="h-12"
+                autoComplete="off"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="h-12 w-full" disabled={resetPassword.isPending}>
+                Salvar senha
               </Button>
             </DialogFooter>
           </form>
