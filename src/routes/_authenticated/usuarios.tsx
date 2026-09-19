@@ -160,6 +160,9 @@ function UsersPage() {
                     {u.active ? "Ativo" : "Inativo"}
                   </span>
                 </div>
+                <Button variant="outline" size="sm" onClick={() => setResetUser(u)}>
+                  Nova senha
+                </Button>
               </div>
             </div>
           </div>
