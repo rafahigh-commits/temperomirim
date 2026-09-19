@@ -97,19 +97,40 @@ export const createStaffUser = createServerFn({ method: "POST" })
     });
     if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar o usuário.");
     const uid = created.user.id;
-    const { error: profileError } = await supabaseAdmin
-      .from("profiles")
-      .upsert(
-        { id: uid, full_name: data.fullName, email: data.email, active: true },
-        { onConflict: "id" },
-      );
-    if (profileError) throw new Error(profileError.message);
-    await supabaseAdmin.from("user_roles").delete().eq("user_id", uid);
-    const { error: roleError } = await supabaseAdmin
-      .from("user_roles")
-      .insert({ user_id: uid, role: data.role });
-    if (roleError) throw new Error(roleError.message);
-    return { id: uid };
+    try {
+      const { error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .upsert(
+          { id: uid, full_name: data.fullName, email: data.email.toLowerCase(), active: true },
+          { onConflict: "id" },
+        );
+      if (profileError) throw profileError;
+
+      const { error: clearRoleError } = await supabaseAdmin
+        .from("user_roles")
+        .delete()
+        .eq("user_id", uid);
+      if (clearRoleError) throw clearRoleError;
+
+      const { error: roleError } = await supabaseAdmin
+        .from("user_roles")
+        .insert({ user_id: uid, role: data.role });
+      if (roleError) throw roleError;
+
+      const [{ data: profile }, { data: assignedRole }] = await Promise.all([
+        supabaseAdmin.from("profiles").select("id, active").eq("id", uid).maybeSingle(),
+        supabaseAdmin.from("user_roles").select("role").eq("user_id", uid).maybeSingle(),
+      ]);
+      if (!profile?.active || assignedRole?.role !== data.role) {
+        throw new Error("O acesso não foi concluído corretamente.");
+      }
+
+      return { id: uid };
+    } catch (setupError) {
+      await supabaseAdmin.auth.admin.deleteUser(uid);
+      const message = setupError instanceof Error ? setupError.message : "Falha ao preparar o acesso.";
+      throw new Error(`Não foi possível concluir o cadastro: ${message}`);
+    }
   });
 
 const updateSchema = z.object({
