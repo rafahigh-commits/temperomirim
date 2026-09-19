@@ -98,6 +98,15 @@ function UsersPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const resetPassword = useMutation({
+    mutationFn: (input: { userId: string; password: string }) => resetFn({ data: input }),
+    onSuccess: () => {
+      toast.success("Senha atualizada. Informe a nova senha ao usuário.");
+      setResetUser(null);
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   if (loading) return <p className="text-sm text-muted-foreground">Carregando…</p>;
   if (!isAdmin) {
     return (
