@@ -97,10 +97,13 @@ export const createStaffUser = createServerFn({ method: "POST" })
     });
     if (error || !created.user) throw new Error(error?.message ?? "Não foi possível criar o usuário.");
     const uid = created.user.id;
-    await supabaseAdmin
+    const { error: profileError } = await supabaseAdmin
       .from("profiles")
-      .update({ full_name: data.fullName, email: data.email, active: true })
-      .eq("id", uid);
+      .upsert(
+        { id: uid, full_name: data.fullName, email: data.email, active: true },
+        { onConflict: "id" },
+      );
+    if (profileError) throw new Error(profileError.message);
     await supabaseAdmin.from("user_roles").delete().eq("user_id", uid);
     const { error: roleError } = await supabaseAdmin
       .from("user_roles")
