@@ -7,8 +7,12 @@ type Role = "admin" | "gerente" | "atendente";
 import { toast } from "sonner";
 
 import { useAuth } from "@/lib/auth";
-import { supabase } from "@/integrations/supabase/client";
-import { createStaffUser, type StaffUser } from "@/lib/users.functions";
+import {
+  createStaffUser,
+  listStaffUsers,
+  updateStaffUser,
+  type StaffUser,
+} from "@/lib/users.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +57,8 @@ function UsersPage() {
   const { isAdmin, loading } = useAuth();
   const queryClient = useQueryClient();
   const createFn = useServerFn(createStaffUser);
+  const listFn = useServerFn(listStaffUsers);
+  const updateFn = useServerFn(updateStaffUser);
 
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<Role>("atendente");
@@ -60,26 +66,7 @@ function UsersPage() {
   const users = useQuery({
     queryKey: ["staff-users"],
     enabled: isAdmin,
-    queryFn: async (): Promise<StaffUser[]> => {
-      const [{ data: profiles, error: pErr }, { data: roles, error: rErr }] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("id, full_name, email, active, created_at")
-          .order("created_at", { ascending: true }),
-        supabase.from("user_roles").select("user_id, role"),
-      ]);
-      if (pErr) throw new Error(pErr.message);
-      if (rErr) throw new Error(rErr.message);
-      const roleMap = new Map((roles ?? []).map((r) => [r.user_id, r.role]));
-      return (profiles ?? []).map((p) => ({
-        id: p.id,
-        full_name: p.full_name,
-        email: p.email,
-        active: p.active,
-        created_at: p.created_at,
-        role: (roleMap.get(p.id) ?? "atendente") as Role,
-      }));
-    },
+    queryFn: (): Promise<StaffUser[]> => listFn(),
   });
 
   const invalidate = () => {
@@ -99,23 +86,8 @@ function UsersPage() {
   });
 
   const updateUser = useMutation({
-    mutationFn: async (input: { userId: string; role?: Role; active?: boolean }) => {
-      if (input.active !== undefined) {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ active: input.active })
-          .eq("id", input.userId);
-        if (error) throw new Error(error.message);
-      }
-      if (input.role !== undefined) {
-        await supabase.from("user_roles").delete().eq("user_id", input.userId);
-        const { error } = await supabase
-          .from("user_roles")
-          .insert({ user_id: input.userId, role: input.role });
-        if (error) throw new Error(error.message);
-      }
-      return { ok: true };
-    },
+    mutationFn: (input: { userId: string; role?: Role; active?: boolean }) =>
+      updateFn({ data: input }),
     onSuccess: () => {
       toast.success("Usuário atualizado.");
       invalidate();
