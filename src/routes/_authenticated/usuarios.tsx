@@ -10,6 +10,7 @@ import { useAuth } from "@/lib/auth";
 import {
   createStaffUser,
   listStaffUsers,
+  resetStaffPassword,
   updateStaffUser,
   type StaffUser,
 } from "@/lib/users.functions";
