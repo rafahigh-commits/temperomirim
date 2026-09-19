@@ -230,6 +230,49 @@ function UsersPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={resetUser !== null} onOpenChange={(v) => !v && setResetUser(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Definir nova senha</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            Por segurança, as senhas não podem ser vistas por ninguém — nem pelo administrador.
+            Defina uma nova senha para {resetUser?.full_name || resetUser?.email} e informe ao
+            usuário.
+          </p>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = new FormData(e.currentTarget);
+              const password = String(form.get("password") ?? "");
+              if (password.length < 6) {
+                toast.error("A senha deve ter no mínimo 6 caracteres.");
+                return;
+              }
+              if (resetUser) resetPassword.mutate({ userId: resetUser.id, password });
+            }}
+          >
+            <div className="space-y-2">
+              <Label htmlFor="reset-password">Nova senha</Label>
+              <Input
+                id="reset-password"
+                name="password"
+                type="text"
+                required
+                className="h-12"
+                autoComplete="off"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit" className="h-12 w-full" disabled={resetPassword.isPending}>
+                Salvar senha
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
