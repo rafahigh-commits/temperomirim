@@ -60,9 +60,11 @@ function UsersPage() {
   const createFn = useServerFn(createStaffUser);
   const listFn = useServerFn(listStaffUsers);
   const updateFn = useServerFn(updateStaffUser);
+  const resetFn = useServerFn(resetStaffPassword);
 
   const [open, setOpen] = useState(false);
   const [role, setRole] = useState<Role>("atendente");
+  const [resetUser, setResetUser] = useState<StaffUser | null>(null);
 
   const users = useQuery({
     queryKey: ["staff-users"],
