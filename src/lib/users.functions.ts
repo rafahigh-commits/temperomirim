@@ -165,3 +165,21 @@ export const updateStaffUser = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+const resetPasswordSchema = z.object({
+  userId: z.string().uuid(),
+  password: z.string().min(6).max(72),
+});
+
+export const resetStaffPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => resetPasswordSchema.parse(data))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase as never, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: data.password,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
