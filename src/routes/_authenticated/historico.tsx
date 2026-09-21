@@ -209,13 +209,15 @@ function HistoryPage() {
               <Button
                 type="button"
                 variant="outline"
-                size="icon"
+                size="sm"
+                className="h-9 px-3"
                 aria-label={`Imprimir fechamento de ${sale.accounts?.customer_name ?? "cliente"}`}
                 title="Imprimir fechamento"
                 disabled={preparePrint.isPending}
                 onClick={() => preparePrint.mutate(sale)}
               >
                 <Printer className="h-4 w-4" />
+                <span className="hidden sm:inline">Imprimir</span>
               </Button>
             </div>
           </div>
