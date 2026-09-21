@@ -150,7 +150,12 @@ export type SaleRow = {
   total: number | string;
   payment_method: string;
   closed_at: string;
-  accounts: { table_number: string | null; customer_name: string; customer_phone: string } | null;
+  accounts: {
+    table_number: string | null;
+    customer_name: string;
+    customer_phone: string;
+    opened_at: string;
+  } | null;
 };
 
 export function salesQuery(fromISO: string, toISO: string, payment: string | "all") {
@@ -160,7 +165,7 @@ export function salesQuery(fromISO: string, toISO: string, payment: string | "al
       let q = supabase
         .from("sales")
         .select(
-          "id, account_id, subtotal, discount, total, payment_method, closed_at, accounts(table_number, customer_name, customer_phone)",
+          "id, account_id, subtotal, discount, total, payment_method, closed_at, accounts(table_number, customer_name, customer_phone, opened_at)",
         )
         .gte("closed_at", fromISO)
         .lte("closed_at", toISO)

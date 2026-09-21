@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { Printer } from "lucide-react";
+import { toast } from "sonner";
 
+import { ReceiptPrint, type ReceiptItem } from "@/components/ReceiptPrint";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { endOfDayISO, salesQuery, startOfDayISO } from "@/lib/data";
+import { endOfDayISO, salesQuery, settingsQuery, startOfDayISO, type SaleRow } from "@/lib/data";
 import {
   PAYMENT_LABELS,
   PAYMENT_METHODS,
@@ -56,10 +61,42 @@ function HistoryPage() {
   const [to, setTo] = useState(inputDate());
   const [payment, setPayment] = useState<string>("all");
   const [search, setSearch] = useState("");
+  const [receipt, setReceipt] = useState<{ sale: SaleRow; items: ReceiptItem[] } | null>(null);
 
   const fromISO = useMemo(() => startOfDayISO(new Date(`${from}T12:00:00`)), [from]);
   const toISO = useMemo(() => endOfDayISO(new Date(`${to}T12:00:00`)), [to]);
   const sales = useQuery(salesQuery(fromISO, toISO, payment));
+  const settings = useQuery(settingsQuery);
+
+  const preparePrint = useMutation({
+    mutationFn: async (sale: SaleRow) => {
+      const { data, error } = await supabase
+        .from("account_items")
+        .select("product_name, unit_price, quantity, note")
+        .eq("account_id", sale.account_id)
+        .order("created_at", { ascending: true });
+      if (error) throw new Error(error.message);
+      return {
+        sale,
+        items: (data ?? []).map((item) => ({
+          name: item.product_name,
+          quantity: item.quantity,
+          unitPriceCents: toCents(item.unit_price),
+          note: item.note,
+        })),
+      };
+    },
+    onSuccess: setReceipt,
+    onError: (error: Error) => toast.error(error.message),
+  });
+
+  useEffect(() => {
+    if (!receipt) return;
+    const frame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => window.print());
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [receipt]);
 
   const rows = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -79,7 +116,8 @@ function HistoryPage() {
   }
 
   return (
-    <div className="space-y-5">
+    <>
+    <div className="print-hidden space-y-5">
       <h1 className="text-2xl font-black tracking-tight text-foreground">Histórico</h1>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -164,12 +202,44 @@ function HistoryPage() {
                 {PAYMENT_LABELS[sale.payment_method as (typeof PAYMENT_METHODS)[number]]}
               </p>
             </div>
-            <p className="shrink-0 font-black tabular-nums text-foreground">
-              {formatBRL(toCents(sale.total))}
-            </p>
+            <div className="flex shrink-0 items-center gap-2">
+              <p className="font-black tabular-nums text-foreground">
+                {formatBRL(toCents(sale.total))}
+              </p>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                aria-label={`Imprimir fechamento de ${sale.accounts?.customer_name ?? "cliente"}`}
+                title="Imprimir fechamento"
+                disabled={preparePrint.isPending}
+                onClick={() => preparePrint.mutate(sale)}
+              >
+                <Printer className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         ))}
       </div>
     </div>
+    {receipt?.sale.accounts && (
+      <ReceiptPrint
+        businessName={settings.data?.businessName ?? "Tempero Mirim"}
+        customerName={receipt.sale.accounts.customer_name}
+        tableNumber={receipt.sale.accounts.table_number}
+        openedAt={receipt.sale.accounts.opened_at}
+        closedAt={receipt.sale.closed_at}
+        items={receipt.items}
+        subtotalCents={toCents(receipt.sale.subtotal)}
+        serviceFeeCents={Math.max(
+          0,
+          toCents(receipt.sale.total) - toCents(receipt.sale.subtotal) + toCents(receipt.sale.discount),
+        )}
+        discountCents={toCents(receipt.sale.discount)}
+        totalCents={toCents(receipt.sale.total)}
+        paymentLabel={PAYMENT_LABELS[receipt.sale.payment_method] ?? null}
+      />
+    )}
+    </>
   );
 }
