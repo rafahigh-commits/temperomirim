@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Minus, Plus, Printer, StickyNote, Trash2 } from "lucide-react";
@@ -105,7 +105,6 @@ function AccountPage() {
   const { accountId } = Route.useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const account = useQuery(accountQuery(accountId));
   const items = useQuery(accountItemsQuery(accountId));
@@ -261,9 +260,11 @@ function AccountPage() {
   }
 
   const isClosed = account.data.status === "closed";
+  const saleData = sale.data;
 
   return (
-    <div className="space-y-5 pb-40">
+    <>
+      <div className="print-hidden space-y-5 pb-40">
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
           <Link to="/" aria-label="Voltar">
@@ -288,8 +289,18 @@ function AccountPage() {
       </div>
 
       {isClosed && (
-        <div className="rounded-xl bg-secondary p-4 text-sm font-semibold text-secondary-foreground">
-          Esta conta já está fechada e não pode ser alterada.
+        <div className="flex items-center justify-between gap-3 rounded-xl bg-secondary p-4">
+          <p className="text-sm font-semibold text-secondary-foreground">
+            Esta conta já está fechada e não pode ser alterada.
+          </p>
+          <Button
+            variant="default"
+            className="h-12 shrink-0 rounded-xl px-4 text-sm font-bold"
+            onClick={() => window.print()}
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimir fechamento
+          </Button>
         </div>
       )}
 
