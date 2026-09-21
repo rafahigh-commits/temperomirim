@@ -665,7 +665,7 @@ function AccountPage() {
           discountCents={saleData ? toCents(saleData.discount) : discountCents}
           totalCents={saleData ? toCents(saleData.total) : totalCents}
           paymentLabel={
-            saleData ? PAYMENT_LABELS[saleData.payment_method as PaymentMethod] : null
+            saleData ? (PAYMENT_LABELS[saleData.payment_method as PaymentMethod] ?? null) : null
           }
         />
       )}
