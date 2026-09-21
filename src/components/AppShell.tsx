@@ -34,8 +34,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   const visible = navItems.filter((i) => (i.admin ? isAdmin : i.manager ? isManager : true));
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-20 md:pb-0">
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-card/95 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-background pb-20 md:pb-0 print:min-h-0 print:bg-white print:pb-0">
+      <header className="sticky top-0 z-30 border-b border-border/60 bg-card/95 backdrop-blur print:hidden">
         <div className="mx-auto grid max-w-5xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
           <div className="flex min-w-0 items-center gap-2.5 sm:gap-4">
             <img
@@ -86,9 +86,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">{children}</main>
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5 print:max-w-none print:p-0">
+        {children}
+      </main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur md:hidden print:hidden">
         <div className="mx-auto flex max-w-5xl items-stretch justify-around">
           {visible.map((item) => (
             <Link
