@@ -171,9 +171,11 @@
 
   .receipt-print {
     display: block !important;
-    width: 48mm;
-    margin: 0 auto;
-    padding: 2mm 0 4mm;
+    box-sizing: border-box;
+    width: 46mm;
+    max-width: 46mm;
+    margin: 0;
+    padding: 2mm 2mm 4mm 1mm;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 10px;
     line-height: 1.35;
@@ -200,13 +202,17 @@
   }
 
   .receipt-print .receipt-line {
-    display: flex;
-    justify-content: space-between;
-    gap: 2mm;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    column-gap: 1.5mm;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .receipt-print .receipt-line span:first-child {
+    min-width: 0;
     overflow: hidden;
+    overflow-wrap: anywhere;
   }
 
   .receipt-print .receipt-line span:last-child {
