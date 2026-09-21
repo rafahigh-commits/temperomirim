@@ -173,6 +173,23 @@ export function salesQuery(fromISO: string, toISO: string, payment: string | "al
   });
 }
 
+export function saleForAccountQuery(accountId: string) {
+  return queryOptions({
+    queryKey: ["sale", accountId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("sales")
+        .select("id, subtotal, discount, total, payment_method, closed_at")
+        .eq("account_id", accountId)
+        .order("closed_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function startOfDayISO(d = new Date()): string {
   const s = new Date(d);
   s.setHours(0, 0, 0, 0);

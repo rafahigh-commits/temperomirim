@@ -142,3 +142,84 @@
     color: var(--color-foreground);
   }
 }
+
+/*
+ * Impressão térmica POS-58 (bobina de 58mm, área útil ~48mm).
+ * Na impressão, apenas o recibo (.receipt-print) fica visível;
+ * todo o restante da interface é escondido via .print-hidden.
+ */
+.receipt-print {
+  display: none;
+}
+
+@page {
+  size: 58mm auto;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .print-hidden {
+    display: none !important;
+  }
+
+  .receipt-print {
+    display: block !important;
+    width: 48mm;
+    margin: 0 auto;
+    padding: 2mm 0 4mm;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-size: 10px;
+    line-height: 1.35;
+    color: #000;
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .receipt-print p {
+    margin: 0;
+    padding: 0;
+    word-break: break-word;
+  }
+
+  .receipt-print .receipt-center {
+    text-align: center;
+  }
+
+  .receipt-print .receipt-business {
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+
+  .receipt-print .receipt-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 2mm;
+  }
+
+  .receipt-print .receipt-line span:first-child {
+    overflow: hidden;
+  }
+
+  .receipt-print .receipt-line span:last-child {
+    white-space: nowrap;
+  }
+
+  .receipt-print .receipt-total {
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .receipt-print .receipt-note {
+    font-style: italic;
+    padding-left: 2mm;
+  }
+}

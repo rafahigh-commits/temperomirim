@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, Minus, Plus, StickyNote, Trash2 } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Printer, StickyNote, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -10,9 +10,11 @@ import {
   accountItemsQuery,
   accountQuery,
   menuQuery,
+  saleForAccountQuery,
   settingsQuery,
   type ItemRow,
 } from "@/lib/data";
+import { ReceiptPrint } from "@/components/ReceiptPrint";
 import {
   PAYMENT_LABELS,
   PAYMENT_METHODS,
@@ -103,12 +105,15 @@ function AccountPage() {
   const { accountId } = Route.useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const account = useQuery(accountQuery(accountId));
   const items = useQuery(accountItemsQuery(accountId));
   const menu = useQuery(menuQuery);
   const settings = useQuery(settingsQuery);
+  const sale = useQuery({
+    ...saleForAccountQuery(accountId),
+    enabled: account.data?.status === "closed",
+  });
   const serviceFeeEnabled = settings.data?.serviceFeeEnabled ?? true;
   const discountEnabled = settings.data?.discountEnabled ?? true;
 
@@ -236,8 +241,8 @@ function AccountPage() {
     },
     onSuccess: () => {
       toast.success("Conta fechada e pagamento registrado.");
+      setClosing(false);
       void queryClient.invalidateQueries();
-      navigate({ to: "/" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -255,9 +260,11 @@ function AccountPage() {
   }
 
   const isClosed = account.data.status === "closed";
+  const saleData = sale.data;
 
   return (
-    <div className="space-y-5 pb-40">
+    <>
+      <div className="print-hidden space-y-5 pb-40">
       <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3">
         <Button variant="ghost" size="icon" asChild>
           <Link to="/" aria-label="Voltar">
@@ -282,8 +289,18 @@ function AccountPage() {
       </div>
 
       {isClosed && (
-        <div className="rounded-xl bg-secondary p-4 text-sm font-semibold text-secondary-foreground">
-          Esta conta já está fechada e não pode ser alterada.
+        <div className="flex items-center justify-between gap-3 rounded-xl bg-secondary p-4">
+          <p className="text-sm font-semibold text-secondary-foreground">
+            Esta conta já está fechada e não pode ser alterada.
+          </p>
+          <Button
+            variant="default"
+            className="h-12 shrink-0 rounded-xl px-4 text-sm font-bold"
+            onClick={() => window.print()}
+          >
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimir fechamento
+          </Button>
         </div>
       )}
 
@@ -628,6 +645,30 @@ function AccountPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+
+      {isClosed && (
+        <ReceiptPrint
+          businessName={settings.data?.businessName ?? "Tempero Mirim"}
+          customerName={account.data.customer_name}
+          tableNumber={account.data.table_number}
+          openedAt={account.data.opened_at}
+          closedAt={saleData?.closed_at ?? account.data.closed_at}
+          items={groups.map((g) => ({
+            name: g.product_name,
+            quantity: g.quantity,
+            unitPriceCents: g.unit_price_cents,
+            note: g.note,
+          }))}
+          subtotalCents={subtotalCents}
+          serviceFeeCents={serviceFeeCents}
+          discountCents={saleData ? toCents(saleData.discount) : discountCents}
+          totalCents={saleData ? toCents(saleData.total) : totalCents}
+          paymentLabel={
+            saleData ? (PAYMENT_LABELS[saleData.payment_method as PaymentMethod] ?? null) : null
+          }
+        />
+      )}
+    </>
   );
 }
