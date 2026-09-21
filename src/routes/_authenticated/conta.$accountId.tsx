@@ -645,6 +645,30 @@ function AccountPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+      </div>
+
+      {isClosed && (
+        <ReceiptPrint
+          businessName={settings.data?.businessName ?? "Tempero Mirim"}
+          customerName={account.data.customer_name}
+          tableNumber={account.data.table_number}
+          openedAt={account.data.opened_at}
+          closedAt={saleData?.closed_at ?? account.data.closed_at}
+          items={groups.map((g) => ({
+            name: g.product_name,
+            quantity: g.quantity,
+            unitPriceCents: g.unit_price_cents,
+            note: g.note,
+          }))}
+          subtotalCents={subtotalCents}
+          serviceFeeCents={serviceFeeCents}
+          discountCents={saleData ? toCents(saleData.discount) : discountCents}
+          totalCents={saleData ? toCents(saleData.total) : totalCents}
+          paymentLabel={
+            saleData ? PAYMENT_LABELS[saleData.payment_method as PaymentMethod] : null
+          }
+        />
+      )}
+    </>
   );
 }
