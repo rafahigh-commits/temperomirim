@@ -10,9 +10,11 @@ import {
   accountItemsQuery,
   accountQuery,
   menuQuery,
+  saleForAccountQuery,
   settingsQuery,
   type ItemRow,
 } from "@/lib/data";
+import { ReceiptPrint } from "@/components/ReceiptPrint";
 import {
   PAYMENT_LABELS,
   PAYMENT_METHODS,
@@ -109,6 +111,10 @@ function AccountPage() {
   const items = useQuery(accountItemsQuery(accountId));
   const menu = useQuery(menuQuery);
   const settings = useQuery(settingsQuery);
+  const sale = useQuery({
+    ...saleForAccountQuery(accountId),
+    enabled: account.data?.status === "closed",
+  });
   const serviceFeeEnabled = settings.data?.serviceFeeEnabled ?? true;
   const discountEnabled = settings.data?.discountEnabled ?? true;
 
@@ -236,8 +242,8 @@ function AccountPage() {
     },
     onSuccess: () => {
       toast.success("Conta fechada e pagamento registrado.");
+      setClosing(false);
       void queryClient.invalidateQueries();
-      navigate({ to: "/" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
