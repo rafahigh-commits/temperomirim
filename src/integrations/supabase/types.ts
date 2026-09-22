@@ -255,6 +255,39 @@ export type Database = {
         }
         Relationships: []
       }
+      tip_closings: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          day: string
+          id: string
+          people_count: number
+          per_person_cents: number
+          total_cents: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          day: string
+          id?: string
+          people_count?: number
+          per_person_cents?: number
+          total_cents?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          day?: string
+          id?: string
+          people_count?: number
+          per_person_cents?: number
+          total_cents?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

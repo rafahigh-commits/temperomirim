@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { endOfDayISO, salesQuery, startOfDayISO } from "@/lib/data";
+import { endOfDayISO, salesQuery, startOfDayISO, tipClosingQuery } from "@/lib/data";
 import { PAYMENT_LABELS, PAYMENT_METHODS, formatBRL, formatTime, toCents } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -63,6 +64,38 @@ function ClosingPage() {
       average: rows.length ? Math.round(total / rows.length) : 0,
     };
   }, [sales.data]);
+
+  const tipsTotal = Math.round(totals.total * 0.1);
+  const queryClient = useQueryClient();
+  const tipClosing = useQuery(tipClosingQuery(day));
+  const [people, setPeople] = useState("");
+
+  useEffect(() => {
+    setPeople(tipClosing.data?.people_count ? String(tipClosing.data.people_count) : "");
+  }, [tipClosing.data, day]);
+
+  const peopleCount = Number(people.replace(/\D/g, ""));
+  const perPerson = peopleCount > 0 ? Math.round(tipsTotal / peopleCount) : null;
+
+  const saveTips = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("tip_closings").upsert(
+        {
+          day,
+          total_cents: tipsTotal,
+          people_count: peopleCount,
+          per_person_cents: perPerson ?? 0,
+        },
+        { onConflict: "day" },
+      );
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      toast.success("Divisão de gorjetas salva.");
+      queryClient.invalidateQueries({ queryKey: ["tip-closing", day] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
 
   if (!isManager) {
     return <p className="text-sm text-muted-foreground">Área restrita a administradores e gerentes.</p>;
