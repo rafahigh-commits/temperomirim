@@ -169,6 +169,22 @@
     display: none !important;
   }
 
+  /*
+   * Recibo térmico: força texto preto puro, peso bold e fundo branco em
+   * TODOS os elementos. Impressoras térmicas renderizam cinza/cores como
+   * traços fracos, então sobrescrevemos quaisquer variáveis de tema
+   * (text-muted-foreground, etc.) herdadas do app.
+   */
+  .receipt-print,
+  .receipt-print * {
+    color: #000000 !important;
+    background: #ffffff !important;
+    background-image: none !important;
+    font-weight: 700 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .receipt-print {
     display: block !important;
     box-sizing: border-box;
@@ -179,10 +195,6 @@
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 10px;
     line-height: 1.35;
-    color: #000;
-    background: #fff;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
 
   .receipt-print p {
@@ -197,7 +209,7 @@
 
   .receipt-print .receipt-business {
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 900 !important;
     text-transform: uppercase;
   }
 
@@ -221,7 +233,7 @@
 
   .receipt-print .receipt-total {
     font-size: 13px;
-    font-weight: bold;
+    font-weight: 900 !important;
   }
 
   .receipt-print .receipt-note {
