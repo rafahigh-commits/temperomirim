@@ -196,8 +196,12 @@
     box-sizing: border-box;
     width: 46mm;
     max-width: 46mm;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
     margin: 0;
     padding: 2mm 2mm 4mm 1mm;
+    overflow: visible !important;
     font-family: "Courier New", ui-monospace, monospace;
     font-size: 10px;
     line-height: 1.35;
