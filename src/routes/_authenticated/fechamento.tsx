@@ -65,6 +65,38 @@ function ClosingPage() {
     };
   }, [sales.data]);
 
+  const tipsTotal = Math.round(totals.total * 0.1);
+  const queryClient = useQueryClient();
+  const tipClosing = useQuery(tipClosingQuery(day));
+  const [people, setPeople] = useState("");
+
+  useEffect(() => {
+    setPeople(tipClosing.data?.people_count ? String(tipClosing.data.people_count) : "");
+  }, [tipClosing.data, day]);
+
+  const peopleCount = Number(people.replace(/\D/g, ""));
+  const perPerson = peopleCount > 0 ? Math.round(tipsTotal / peopleCount) : null;
+
+  const saveTips = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("tip_closings").upsert(
+        {
+          day,
+          total_cents: tipsTotal,
+          people_count: peopleCount,
+          per_person_cents: perPerson ?? 0,
+        },
+        { onConflict: "day" },
+      );
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      toast.success("Divisão de gorjetas salva.");
+      queryClient.invalidateQueries({ queryKey: ["tip-closing", day] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+
   if (!isManager) {
     return <p className="text-sm text-muted-foreground">Área restrita a administradores e gerentes.</p>;
   }
