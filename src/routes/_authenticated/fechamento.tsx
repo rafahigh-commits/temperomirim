@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { endOfDayISO, salesQuery, startOfDayISO } from "@/lib/data";
+import { endOfDayISO, salesQuery, startOfDayISO, tipClosingQuery } from "@/lib/data";
 import { PAYMENT_LABELS, PAYMENT_METHODS, formatBRL, formatTime, toCents } from "@/lib/money";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
