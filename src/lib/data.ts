@@ -195,6 +195,21 @@ export function saleForAccountQuery(accountId: string) {
   });
 }
 
+export function tipClosingQuery(day: string) {
+  return queryOptions({
+    queryKey: ["tip-closing", day],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tip_closings")
+        .select("day, total_cents, people_count, per_person_cents")
+        .eq("day", day)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
 export function startOfDayISO(d = new Date()): string {
   const s = new Date(d);
   s.setHours(0, 0, 0, 0);
