@@ -163,6 +163,12 @@
     background: #fff !important;
     margin: 0 !important;
     padding: 0 !important;
+    /* Evita papel em branco após o recibo: a página impressa não pode
+       herdar a altura da tela, senão a bobina continua avançando. */
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
 
   .print-hidden {
