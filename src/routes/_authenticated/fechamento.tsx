@@ -1,6 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -136,6 +140,52 @@ function ClosingPage() {
           </div>
         ))}
       </div>
+
+      <section className="space-y-3 rounded-3xl bg-card p-5 shadow-sm">
+        <h2 className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+          Gorjetas dos garçons
+        </h2>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            10% do faturamento
+          </p>
+          <p className="text-3xl font-black tabular-nums text-foreground">{formatBRL(tipsTotal)}</p>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="people">Quantidade de pessoas</Label>
+          <Input
+            id="people"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            className="h-12 max-w-[10rem]"
+            placeholder="0"
+            value={people}
+            onChange={(e) => setPeople(e.target.value)}
+          />
+        </div>
+
+        {perPerson !== null && (
+          <div className="rounded-2xl bg-secondary/60 p-4">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              Valor por pessoa
+            </p>
+            <p className="text-3xl font-black tabular-nums text-foreground">
+              {formatBRL(perPerson)}
+            </p>
+          </div>
+        )}
+
+        <Button
+          type="button"
+          className="h-12 w-full"
+          disabled={perPerson === null || saveTips.isPending}
+          onClick={() => saveTips.mutate()}
+        >
+          {saveTips.isPending ? "Salvando…" : "Salvar divisão"}
+        </Button>
+      </section>
 
       {totals.discount > 0 && (
         <p className="text-sm text-muted-foreground tabular-nums">
