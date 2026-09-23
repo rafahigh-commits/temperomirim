@@ -112,7 +112,7 @@ export const menuQuery = queryOptions({
   queryFn: async () => {
     const [{ data: categories, error: catError }, { data: products, error: prodError }] =
       await Promise.all([
-        supabase.from("categories").select("id, name, sort_order").order("sort_order"),
+        supabase.from("categories").select("id, name, sort_order").order("name"),
         supabase
           .from("products")
           .select("id, name, price, active, category_id")
